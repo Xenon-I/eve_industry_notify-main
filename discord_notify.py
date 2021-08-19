@@ -19,7 +19,7 @@ def get_industry_jobs():
         'X-CSRF-TOKEN': '',
     }
     response = requests.get(
-        eve_seat_host + 'api/v2/corporation/industry/' + eve_corporation_id + '?%24filter=status%20eq%20%27active%27',
+        eve_seat_host + 'api/v2/corporation/industry/' + eve_corporation_id + '?%24filter=status%20eq%20%27active%27', # Odata filter for get only active jobs
         headers=headers)
     response_json = response.json()
     if response_json['meta']['last_page'] == 1:
@@ -67,15 +67,18 @@ if __name__ == "__main__":
                     buff = '[some_structure]'
                 else:
                     buff = '[some_structure]'
-                message_buff += item['blueprint']['typeName'] + ' x ' + str(item['runs']) + ' job in ' + buff + ' is done.\n'
-                set_redis(item['job_id'])
-                if len(message_buff) > 1000:
-                    notify_done_message(message_buff)
-                    time.sleep(3)
-                    message_buff = ''
+#                 message_buff += item['blueprint']['typeName'] + ' x ' + str(item['runs']) + ' job in ' + buff + ' is done.\n'
+#                 set_redis(item['job_id'])
+#                 if len(message_buff) > 1000:
+#                     notify_done_message(message_buff)
+#                     time.sleep(3)
+#                     message_buff = ''
+            message_buff.append(item['blueprint']['typeName'] + ' x ' + str(item['runs']) + ' job in ' + buff + ' is done.\n')
+            set_redis(item['job_id'])
 
     if message_buff != '':
-        notify_done_message(message_buff)
+#         notify_done_message(message_buff)
+        notify_done_message('\n'.join(list(set(message_buff))))
     else:
         exit(0)
 
