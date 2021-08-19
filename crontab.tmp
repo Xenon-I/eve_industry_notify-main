@@ -1,0 +1,1 @@
+*/5 * * * * /usr/bin/python3 [somelocation]/discord_notify.py >> /dev/null 2>&1
